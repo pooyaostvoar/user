@@ -13,18 +13,15 @@ passport.use(
   ) {
     let user: any;
     try {
-      console.log("hereee");
       user = await AppDataSource.getRepository(User).findOne({
         where: { username },
       });
-      console.log(user, "userrrr");
       if (!user) {
         return cb(null, false, {
           message: "Incorrect username or password.",
         });
       }
     } catch (err) {
-      console.log("errrrrr", err);
       cb(err);
     }
 
@@ -43,7 +40,6 @@ passport.use(
             message: "Incorrect username or password.",
           });
         }
-        console.log("thisssss");
         return cb(null, user);
       }
     );
@@ -51,14 +47,12 @@ passport.use(
 );
 
 passport.serializeUser(function (user: User, cb: any) {
-  console.log("serializeUser");
   process.nextTick(function () {
     cb(null, { id: user.id, username: user.username });
   });
 });
 
 passport.deserializeUser(function (user: User, cb: any) {
-  console.log("deserializeUser", user);
   process.nextTick(function () {
     return cb(null, user);
   });

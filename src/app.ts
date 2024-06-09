@@ -8,6 +8,9 @@ import { googleRouter } from "./api/google";
 import { passwordAuthRouter } from "./api/auth-password";
 import cors from "cors";
 import { passport } from "./middleware/passport";
+const cookieParser = require("cookie-parser");
+import RedisStore from "connect-redis";
+import { createClient } from "redis";
 
 const isTesting = process.env.NODE_ENV === "test";
 
@@ -23,14 +26,30 @@ const app: Express = express();
 const port = 3004;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-  })
-);
+
+const corsOptions = {
+  origin: [
+    "http://localhost:3000",
+    "http://localhost:3003",
+    "http://localhost:3004",
+  ],
+  optionsSuccessStatus: 200, // For legacy browser support
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
+const redisClient = createClient();
+redisClient.connect().catch(console.error);
+
+const redisStore = new RedisStore({
+  client: redisClient,
+  prefix: "myapp:",
+});
 
 app.use(
   session({
+    store: redisStore,
     secret: "keyboard cat",
     resave: false,
     saveUninitialized: false,
@@ -48,5 +67,6 @@ app.listen(port, () => {
 
 app.use("", googleRouter);
 app.use("", passwordAuthRouter);
+app.use(cookieParser());
 
 export default app;

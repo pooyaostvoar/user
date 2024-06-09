@@ -7,23 +7,24 @@ var crypto = require("crypto");
 
 export const passwordAuthRouter = express.Router();
 
-passwordAuthRouter.get("/test", (req, res) => {
-  res.send("logged in");
+passwordAuthRouter.get("/auth-user", (req, res) => {
+  if (req.user) {
+    res.send({ user: req.user });
+  } else {
+    res.send("failed");
+  }
 });
 
 passwordAuthRouter.post(
-  "/login/password",
+  "/login",
   passport.authenticate("local", {
-    successReturnToOrRedirect: "/test",
-    failureRedirect: "/test",
     failureMessage: true,
-  })
+  }),
+  (req, res) => {
+    return res.cookie("sessionID", req.sessionID).send({ status: "success" });
+  }
 );
 
-/* POST /logout
- *
- * This route logs the user out.
- */
 passwordAuthRouter.post("/logout", function (req, res, next) {
   req.logout(function (err) {
     if (err) {
@@ -33,15 +34,6 @@ passwordAuthRouter.post("/logout", function (req, res, next) {
   });
 });
 
-/* POST /signup
- *
- * This route creates a new user account.
- *
- * A desired username and password are submitted to this route via an HTML form,
- * which was rendered by the `GET /signup` route.  The password is hashed and
- * then a new user record is inserted into the database.  If the record is
- * successfully created, the user is logged in.
- */
 passwordAuthRouter.post("/signup", async function (req, res, next) {
   var salt = crypto.randomBytes(16);
   crypto.pbkdf2(
@@ -61,11 +53,10 @@ passwordAuthRouter.post("/signup", async function (req, res, next) {
           salt,
           email: "",
         });
-        res.send({ ok: 1 });
+        res.send({ status: "success" });
       } catch (err) {
         res.redirect("/");
       }
     }
   );
 });
-console.log("endddddddddd");
