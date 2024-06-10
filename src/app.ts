@@ -39,7 +39,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const redisClient = createClient();
+const redisClient = createClient({
+  url: "redis://:redis-pass@redis:6379",
+});
 redisClient.connect().catch(console.error);
 
 const redisStore = new RedisStore({
