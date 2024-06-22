@@ -11,7 +11,7 @@ passwordAuthRouter.get("/auth-user", (req, res) => {
   if (req.user) {
     res.send({ user: req.user });
   } else {
-    res.send("failed");
+    res.send(401);
   }
 });
 
