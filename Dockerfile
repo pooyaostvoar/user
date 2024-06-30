@@ -8,7 +8,9 @@ ENV NODE_ENV=production
 
 RUN echo $NODE_ENV
 
-RUN npm ci --omit=dev
+RUN echo "npm version: $(npm -v)"
+
+RUN npm install --omit=dev
 
 
 CMD [ "npm", "run dev" ]
