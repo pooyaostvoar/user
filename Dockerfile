@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:18
 
 
 WORKDIR /app
@@ -8,9 +8,10 @@ ENV NODE_ENV=production
 
 RUN echo $NODE_ENV
 
-RUN echo "npm version: $(npm -v)"
+RUN echo "npm version: $(npm -v)"   
 
-RUN npm install --omit=dev
+
+RUN npm ci --production
 
 
 CMD [ "npm", "run dev" ]
