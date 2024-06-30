@@ -8,7 +8,7 @@ ENV NODE_ENV=production
 
 RUN echo $NODE_ENV
 
-RUN npm ci --only=production
+RUN npm ci --only=production --omit=dev
 
 
 CMD [ "npm", "run dev" ]
