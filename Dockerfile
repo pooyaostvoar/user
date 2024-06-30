@@ -1,10 +1,12 @@
 FROM node:slim
-ENV NODE_ENV production
 
 
 WORKDIR /app
 
 COPY . .
+ENV NODE_ENV=production
+
+RUN echo $NODE_ENV
 
 RUN npm install
 
