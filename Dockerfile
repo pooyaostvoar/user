@@ -8,7 +8,7 @@ ENV NODE_ENV=production
 
 RUN echo $NODE_ENV
 
-RUN npm install
+RUN npm install --only=production
 
 
 CMD [ "npm", "run dev" ]
